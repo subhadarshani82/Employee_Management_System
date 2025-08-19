@@ -20,5 +20,6 @@ from employees import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('add_employee/',views.add_employee,name='add_employee')
+    path('add_employee/',views.add_employee,name='add_employee'),
+    path('list_employee/',views.list_employee,name='list_employee')
 ]

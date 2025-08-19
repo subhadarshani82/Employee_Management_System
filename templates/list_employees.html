@@ -7,6 +7,37 @@
     <title>Document</title>
 </head>
 <body>
+    <h1>Employee Management System</h1>
+
+    <!-- list of all employees -->
+
+    <table class="table table-bordered">
+  <thead>
+    <tr>
+        <th>Emp Id</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Mobile No</th>
+        <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for emp in employees %}
+    <tr>
+        
+     <td>{{emp.id}}</td>
+     <td>{{emp.name}}</td>
+     <td>{{emp.email}}</td>
+     <td>{{emp.contact}}</td>
+     <td>
+        <a href="" class="btn btn-primary" >Update</a>
+        <a href="" class="btn btn-primary">Delete</a>
+    </td>
+     
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
     <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">

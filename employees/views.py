@@ -3,6 +3,12 @@ from . models import Employees
 from django.contrib import messages
 import re
 # Create your views here.
+
+def list_employee(request):
+    employees=Employees.objects.all()
+    print(employees)
+    return render(request,'list_employees.html',{'employees':employees})
+    
 def add_employee(request):
     if request.method=='POST':
         name=request.POST.get('name').strip()
@@ -21,7 +27,9 @@ def add_employee(request):
             employees=Employees(name=name,email=email,contact=phone)
             employees.save()
             messages.success(request,"Employee added Successfully.")
-        return render(request,'list_employees.html')
-        # return redirect('add_employee')#change it later
+        # return render(request,'list_employees.html')
+        return redirect('list_employee')#change it later
         
-    return render(request,'list_employees.html')
+    # return render(request,'list_employees.html')
+    return redirect('list_employee')
+
