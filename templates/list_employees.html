@@ -7,7 +7,18 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Employee Management System</h1>
+    <h1 style="text-align:center">Employee Management System</h1>
+
+    <div>
+        <form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <input type="text" name="q" class="form-control" placeholder="Search by name, email, or mobile">
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">Search</button>
+  </div>
+</form>
+    </div>
 
     <!-- list of all employees -->
 
@@ -30,8 +41,55 @@
      <td>{{emp.email}}</td>
      <td>{{emp.contact}}</td>
      <td>
-        <a href="" class="btn btn-primary" >Update</a>
-        <a href="" class="btn btn-primary">Delete</a>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{emp.id}}">
+ Update
+</button>
+<a href="{% url 'delete_employee' emp.id %}"  class="btn btn-primary">Delete</a>
+
+<!-- Modal for update -->
+<div class="modal fade {% if request.GET.modal == 'update' and request.GET.emp_id == emp.id|stringformat:'s' and messages %}show d-block{% endif %}" 
+     id="exampleModal{{emp.id}}" 
+     tabindex="-1" aria-labelledby="exampleModalLabel{{emp.id}}" aria-hidden="true"
+     {% if request.GET.modal == 'update' and request.GET.emp_id == emp.id|stringformat:'s' and messages %}style="background: rgba(0,0,0,0.5);" {% endif %}>
+    
+     <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Employee</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% if messages %}
+        {% for msg in messages %}
+        <div class ="alert alert-{% if msg.tags == 'error' %}danger{% else %}{{msg.tags}}{% endif %} alert-dismissible fade show" role="alert">
+            {{msg}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <form action="{% url 'update_employee' emp.id %}?emp_id={{emp.id}}" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+            <label for="name" class="form-label">Employee Name</label>
+            <input type="text" class="form-control" id="name" value="{{emp.name}}" name="name">
+            </div>
+            <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" value="{{emp.email}}" name="email">
+            </div>
+            <div class="mb-3">
+            <label for="phone" class="form-label">Mobile No</label>
+            <input type="number" class="form-control" id="phone" value="{{emp.contact}}" name="contact">
+            </div>
+        <div class="modal-footer">
+        <button type="reset" class="btn btn-primary">Reset </button>
+        <button type="submit" class="btn btn-primary">Update </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+      
+      </form>
+      </div>
+        
     </td>
      
     </tr>
@@ -40,13 +98,17 @@
 </table>
 
     <!-- Button trigger modal -->
+<div class="d-flex justify-content-end">
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
   Add New Employee
 </button>
+</div>
+<!-- add employee Modal -->
+<div class="modal fade {% if request.GET.modal == 'add' and messages %}show d-block{% endif %}" 
+     id="exampleModal" 
+     tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+     {% if request.GET.modal == 'add' and messages %}style="background: rgba(0,0,0,0.5);" {% endif %}>
 
-<!-- Modal -->
-<div class="modal fade {% if messages %}show d-block{% endif %}" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" 
-     {% if messages %}style="background: rgba(0,0,0,0.5);" {% endif %}>
     <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
