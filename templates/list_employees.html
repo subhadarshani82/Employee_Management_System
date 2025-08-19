@@ -8,14 +8,31 @@
 </head>
 <body>
     <h1 style="text-align:center">Employee Management System</h1>
-
+<!-- search employee functionality -->
     <div>
+       {% if messages %}
+       {% for msg in messages %}
+       {% if 'search' in msg.tags %}
+    <div class="alert 
+            {% if 'error' in msg.tags %}alert-danger
+            {% elif 'success' in msg.tags %}alert-success
+            {% elif 'warning' in msg.tags %}alert-warning
+            {% else %}alert-info{% endif %} 
+            alert-dismissible fade show" role="alert">
+      {{ msg }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+        <!-- search bar -->
         <form method="get" class="row g-2 mb-3">
   <div class="col-auto">
-    <input type="text" name="q" class="form-control" placeholder="Search by name, email, or mobile">
+    <input type="text" name="q" class="form-control" placeholder="Search by name, email, or mobile" value="{{request.GET.q}}">
   </div>
   <div class="col-auto">
     <button type="submit" class="btn btn-primary">Search</button>
+    <a href="{% url 'list_employee' %}" class="btn btn-primary">Home</a>
   </div>
 </form>
     </div>
@@ -41,61 +58,22 @@
      <td>{{emp.email}}</td>
      <td>{{emp.contact}}</td>
      <td>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{emp.id}}">
- Update
-</button>
-<a href="{% url 'delete_employee' emp.id %}"  class="btn btn-primary">Delete</a>
+        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{emp.id}}">
+        Update
+        </button> -->
 
-<!-- Modal for update -->
-<div class="modal fade {% if request.GET.modal == 'update' and request.GET.emp_id == emp.id|stringformat:'s' and messages %}show d-block{% endif %}" 
-     id="exampleModal{{emp.id}}" 
-     tabindex="-1" aria-labelledby="exampleModalLabel{{emp.id}}" aria-hidden="true"
-     {% if request.GET.modal == 'update' and request.GET.emp_id == emp.id|stringformat:'s' and messages %}style="background: rgba(0,0,0,0.5);" {% endif %}>
-    
-     <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Update Employee</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        {% if messages %}
-        {% for msg in messages %}
-        <div class ="alert alert-{% if msg.tags == 'error' %}danger{% else %}{{msg.tags}}{% endif %} alert-dismissible fade show" role="alert">
-            {{msg}}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        <form action="{% url 'update_employee' emp.id %}?emp_id={{emp.id}}" method="POST">
-            {% csrf_token %}
-            <div class="mb-3">
-            <label for="name" class="form-label">Employee Name</label>
-            <input type="text" class="form-control" id="name" value="{{emp.name}}" name="name">
-            </div>
-            <div class="mb-3">
-            <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" value="{{emp.email}}" name="email">
-            </div>
-            <div class="mb-3">
-            <label for="phone" class="form-label">Mobile No</label>
-            <input type="number" class="form-control" id="phone" value="{{emp.contact}}" name="contact">
-            </div>
-        <div class="modal-footer">
-        <button type="reset" class="btn btn-primary">Reset </button>
-        <button type="submit" class="btn btn-primary">Update </button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-      
-      </form>
-      </div>
-        
-    </td>
-     
-    </tr>
+
+        <a href="?edit={{ emp.id }}#exampleModal"  class="btn btn-primary">Update</a>
+
+        <a href="{% url 'delete_employee' emp.id %}"  class="btn btn-primary">Delete</a>
+     </td>
+      </tr>
     {% endfor %}
   </tbody>
 </table>
+
+     
+   
 
     <!-- Button trigger modal -->
 <div class="d-flex justify-content-end">
@@ -104,44 +82,53 @@
 </button>
 </div>
 <!-- add employee Modal -->
-<div class="modal fade {% if request.GET.modal == 'add' and messages %}show d-block{% endif %}" 
+<div class="modal fade {% if employee or  request.GET.modal == 'add'  %}show d-block{% endif %}" 
      id="exampleModal" 
-     tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
-     {% if request.GET.modal == 'add' and messages %}style="background: rgba(0,0,0,0.5);" {% endif %}>
+     tabindex="-1" 
+     {% if employee or request.GET.modal == 'add' %}style="background: rgba(0,0,0,0.5);" {% endif %}>
 
     <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add New Employee</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" >{% if employee %} Update Employee {% else %}Add New Employee{% endif %}</h5>
+        <a href="{% url 'list_employee' %}" class="btn-close"></a>
       </div>
       <div class="modal-body">
-        {% if messages %}
+
+         {% if messages %}
         {% for msg in messages %}
-        <div class ="alert alert-{% if msg.tags == 'error' %}danger{% else %}{{msg.tags}}{% endif %} alert-dismissible fade show" role="alert">
+        {% if 'modal' in msg.tags %}
+        <div class="alert 
+            {% if 'error' in msg.tags %}alert-danger
+            {% elif 'success' in msg.tags %}alert-success
+            {% elif 'warning' in msg.tags %}alert-warning
+            {% else %}alert-info{% endif %} 
+            alert-dismissible fade show" role="alert">
             {{msg}}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+        {% endif %}
         {% endfor %}
         {% endif %}
-        <form action="{% url 'add_employee' %}" method="POST">
+        
+        <form action="{% if employee %}{% url 'update_employee' employee.id %}{% else %}{% url 'add_employee' %}{% endif %}" method="POST">
             {% csrf_token %}
             <div class="mb-3">
             <label for="name" class="form-label">Employee Name</label>
-            <input type="text" class="form-control" id="name" placeholder="Subhadarshni Bhoi" name="name">
+            <input type="text" class="form-control" id="name"  name="name" value="{{ employee.name|default:'' }}">
             </div>
             <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email">
+            <input type="email" class="form-control" id="email" value="{{ employee.email|default:'' }}" name="email">
             </div>
             <div class="mb-3">
-            <label for="phone" class="form-label">Phone Number</label>
-            <input type="number" class="form-control" id="phone" placeholder="1234567890" name="contact">
+            <label for="contact" class="form-label">Mobole No</label>
+            <input type="number" class="form-control" id="contact" value="{{ employee.contact|default:'' }}" name="contact">
             </div>
         <div class="modal-footer">
         <button type="reset" class="btn btn-primary">Reset </button>
-        <button type="submit" class="btn btn-primary">Save </button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">{% if employee %} Update {% else %} Save {% endif %}</button>
+        <a href="{% url 'list_employee' %}" class="btn btn-secondary">Close</a>
       </div>
       </form>
       </div>
