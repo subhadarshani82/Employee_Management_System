@@ -17,10 +17,10 @@ mysql
 1. Clone the repository:
 git clone <repository_url>
 
-2 . Navigate to the project folder:
+2. Navigate to the project folder:
 cd employee_Management_System
 
-3.Create and activate a virtual environment:
+3. Create and activate a virtual environment:
 #windows
 virtualenv venv
 venv\Scripts\activate
