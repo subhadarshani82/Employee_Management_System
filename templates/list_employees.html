@@ -26,9 +26,9 @@
     {% endfor %}
     {% endif %}
         <!-- search bar -->
-        <form method="get" class="row g-2 mb-3">
-  <div class="col-auto">
-    <input type="text" name="q" class="form-control" placeholder="Search by name, email, or mobile" value="{{request.GET.q}}">
+    <form method="get" class="row g-2 mb-3">
+   <div class="col-auto">
+    <input type="text" name="query" class="form-control" placeholder="Search by name, email, or mobile" value="{{request.GET.q}}">
   </div>
   <div class="col-auto">
     <button type="submit" class="btn btn-primary">Search</button>
@@ -58,11 +58,7 @@
      <td>{{emp.email}}</td>
      <td>{{emp.contact}}</td>
      <td>
-        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{emp.id}}">
-        Update
-        </button> -->
-
-
+        
         <a href="?edit={{ emp.id }}#exampleModal"  class="btn btn-primary">Update</a>
 
         <a href="{% url 'delete_employee' emp.id %}"  class="btn btn-primary">Delete</a>
@@ -81,7 +77,7 @@
   Add New Employee
 </button>
 </div>
-<!-- add employee Modal -->
+<!-- add and update employee Modal -->
 <div class="modal fade {% if employee or  request.GET.modal == 'add'  %}show d-block{% endif %}" 
      id="exampleModal" 
      tabindex="-1" 
@@ -126,14 +122,12 @@
             <input type="number" class="form-control" id="contact" value="{{ employee.contact|default:'' }}" name="contact">
             </div>
         <div class="modal-footer">
-        <button type="reset" class="btn btn-primary">Reset </button>
-        <button type="submit" class="btn btn-primary">{% if employee %} Update {% else %} Save {% endif %}</button>
+        <!-- <button type="submit" class="btn btn-primary">{% if employee %} Update {% else %} Save {% endif %}</button> -->
+        <button type="submit" class="btn btn-primary"> Save </button>
         <a href="{% url 'list_employee' %}" class="btn btn-secondary">Close</a>
       </div>
       </form>
       </div>
-      
-      
     </div>
     
   </div>

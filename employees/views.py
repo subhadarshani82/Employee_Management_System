@@ -6,12 +6,12 @@ from django.db.models import Q
 # Create your views here.
 
 def list_employee(request):
-    query=request.GET.get('q',"").strip()
+    query=request.GET.get('query',"").strip()
     edit_id=request.GET.get('edit')
     # print(query)
     employees=Employees.objects.all() 
     # print(employees)
-    if 'q' in request.GET:
+    if 'query' in request.GET:
         if query=="":
             messages.error(request,'Please provide value to search.',extra_tags='search')
         else:
@@ -45,7 +45,7 @@ def add_employee(request):
             messages.error(request,"Mobile no should be of 10 digits.",extra_tags='modal')
             return redirect('/list_employee/?modal=add')
         else:
-            print(name,email,mobile)
+            # print(name,email,mobile)
             employees=Employees(name=name,email=email,contact=mobile)
             employees.save()
             messages.success(request,"Employee added Successfully.",extra_tags='modal')
